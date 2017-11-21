@@ -15,7 +15,7 @@ public class DetalheActivity extends AppCompatActivity {
         Intent intent = DetalheActivity.this.getIntent();
         String produtoNome = "";
 
-        if (intent.hasExtra("myap")){
+        if (intent.hasExtra("myapp")){
             produtoNome = intent.getStringExtra("myapp");
         }
 
