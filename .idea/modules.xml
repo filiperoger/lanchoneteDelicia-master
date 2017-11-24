@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://C:\Users\Filipe Roger\Downloads\lanchoneteDelicia-master\LanchoneteDelicia.iml" filepath="C:\Users\Filipe Roger\Downloads\lanchoneteDelicia-master\LanchoneteDelicia.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Filipe Roger\Downloads\lanchoneteDelicia-master\app\app.iml" filepath="C:\Users\Filipe Roger\Downloads\lanchoneteDelicia-master\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lanchoneteDelicia-master.iml" filepath="$PROJECT_DIR$/lanchoneteDelicia-master.iml" />
     </modules>
   </component>
