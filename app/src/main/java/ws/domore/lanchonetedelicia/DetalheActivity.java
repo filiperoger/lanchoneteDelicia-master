@@ -15,11 +15,11 @@ public class DetalheActivity extends AppCompatActivity {
         Intent intent = DetalheActivity.this.getIntent();
         String produtoNome = "";
 
-        if (intent.hasExtra("myapp")){
-            produtoNome = intent.getStringExtra("myapp");
+        if (intent.hasExtra("produto_nome")){
+            produtoNome = intent.getStringExtra("produto_nome");
         }
 
-        TextView textView = (TextView) findViewById(R.id.textView);
+        TextView textView = (TextView) findViewById(R.id.idNome);
         textView.setText(produtoNome);
     }
 

@@ -3,7 +3,6 @@ package ws.domore.lanchonetedelicia;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,34 +12,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 
-import com.loopj.android.http.*;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
+    private Produto[] produtos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(
-                "www.google.com.br", new TextHttpResponseHandler() {
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Log.d("AsyncHttpClient", "response = " + responseString);
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        Log.d("AsyncHttpClient", "response = " + responseString);
-                    }
-                }
-        );
 
         TextView textView = (TextView) this.findViewById(R.id.text_view_title);
         textView.setText(R.string.products_title);
@@ -63,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         produto_list.add("Sanduche Natureba");
         produto_list.add("Salada  Surpresa");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 R.layout.list_item_produto,
                 R.id.text_view_produto,
@@ -71,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         );
 
         ListView listView = (ListView) this.findViewById(R.id.list_view_produtos);
-
         listView.setAdapter(adapter);
 
         Context context = this;
@@ -80,11 +66,33 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(
+                "www.google.com.br", new TextHttpResponseHandler() {
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.d("AsyncHttpClient", "response = " + responseString);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d("AsyncHttpClient", "response = " + responseString);
+                        Gson gson = new GsonBuilder().create();
+                        produtos = gson.fromJson(responseString, Produto[].class);
+                        adapter.clear();
+                        for (Produto produto: produtos){
+                            adapter.add(produto.getNome());
+                        }
+                    }
+                }
+        );
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent detalheIntent = new Intent(MainActivity.this, DetalheActivity.class);
-                detalheIntent.putExtra("myapp", produto_list.get(i));
+                detalheIntent.putExtra("produto_nome", produtos[i].getNome());
                 startActivity(detalheIntent);
             }
         });
