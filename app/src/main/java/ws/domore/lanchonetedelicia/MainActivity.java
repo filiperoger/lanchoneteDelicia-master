@@ -29,26 +29,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Context context = this;
+        String text = "Olá Filipe!!";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
         TextView textView = (TextView) this.findViewById(R.id.text_view_title);
         textView.setText(R.string.products_title);
 
         final ArrayList<String> produto_list = new ArrayList<String>();
-
         produto_list.add("Suco Onda Tropical");
         produto_list.add("Vitamina Planetaria");
         produto_list.add("Hamburguer Exagerado");
         produto_list.add("Pastel Super");
         produto_list.add("Empada Olho Grande");
-        produto_list.add("Boliviado Quente");
-        produto_list.add("Quibe POP");
-        produto_list.add("Esfirra do Sabor");
-        produto_list.add("Crepioca Saborosa");
-        produto_list.add("Pao de Nuvem");
-        produto_list.add("Bruschetta Integral");
-        produto_list.add("Banana chips");
-        produto_list.add("Sopa Funcional");
-        produto_list.add("Sanduche Natureba");
-        produto_list.add("Salada  Surpresa");
+
+        produtos = new Produto[5];
+        produtos[0] = new Produto();
+        produtos[0].setNome("Suco Onda Tropical");
+        produtos[1] = new Produto();
+        produtos[1].setNome("Vitamina Planetaria");
+        produtos[2] = new Produto();
+        produtos[2].setNome("Hamburguer Exagerado");
+        produtos[3] = new Produto();
+        produtos[3].setNome("Pastel Super");
+        produtos[4] = new Produto();
+        produtos[4].setNome("Empada Olho Grande");
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
@@ -60,15 +67,9 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) this.findViewById(R.id.list_view_produtos);
         listView.setAdapter(adapter);
 
-        Context context = this;
-        String text = "Olá Filipe!!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(
-                "www.google.com.br", new TextHttpResponseHandler() {
+                "https://patra-backend.appspot.com/produtos", new TextHttpResponseHandler() {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -78,10 +79,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
                         Log.d("AsyncHttpClient", "response = " + responseString);
+
                         Gson gson = new GsonBuilder().create();
+
                         produtos = gson.fromJson(responseString, Produto[].class);
                         adapter.clear();
-                        for (Produto produto: produtos){
+
+                        for (Produto produto : produtos) {
                             adapter.add(produto.getNome());
                         }
                     }
@@ -93,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent detalheIntent = new Intent(MainActivity.this, DetalheActivity.class);
                 detalheIntent.putExtra("produto_nome", produtos[i].getNome());
+                detalheIntent.putExtra("produto_preco", produtos[i].getPreco());
+                detalheIntent.putExtra("produto_descricao", produtos[i].getDescricao());
+                detalheIntent.putExtra("produto_url", produtos[i].getImagem());
                 startActivity(detalheIntent);
             }
         });
